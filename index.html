@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<!-- Final version of the quiz with Flodesk form and auto-redirect logic -->
+# Recreate the full HTML with all 10 questions, Flodesk gating, and auto-redirect
+html_path = "/mnt/data/index.html"
+html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -66,13 +67,8 @@
   <h1 style="text-align:center; color:#6b54b6;">Introvert Superpower Quiz</h1>
 
   <div id="quiz">
-    <!-- 10 quiz questions go here (shortened for brevity) -->
-    <div class="quiz-section" data-question="q1">
-      <div class="quiz-title">Creative Flow</div>
-      <div class="quiz-text">I get my best ideas when I'm alone or in nature.</div>
-      <div class="rating"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button></div>
-    </div>
-    <!-- (Repeat question blocks for q2 to q10, omitted here) -->
+    <!-- 10 complete question blocks -->
+    %s
     <button class="submit" onclick="showFlodeskForm()">Continue</button>
   </div>
 
@@ -131,3 +127,45 @@
   </script>
 </body>
 </html>
+"""
+
+# Full 10 questions
+questions = [
+    ("Creative Flow", "I get my best ideas when I'm alone or in nature."),
+    ("Energy Recharge", "I regularly create space to recharge, without guilt."),
+    ("Strategic Thinking", "I often notice details and patterns others miss."),
+    ("Authentic Presence", "I don't need to be the loudest to be impactful."),
+    ("Boundaries & Balance", "I say no without overexplaining or apologizing."),
+    ("Focused Listener", "People feel truly heard when I listen — even in silence."),
+    ("Solo Recharge", "I often choose solitude over social plans to reset my energy."),
+    ("Purposeful Speaker", "I only speak when I feel what I say will matter."),
+    ("Detail-Oriented", "I notice things most people overlook — and it helps me plan better."),
+    ("Low-Drama Boundaries", "I’ve learned how to set boundaries without causing drama.")
+]
+
+# Format question blocks
+question_blocks = ""
+for i, (title, text) in enumerate(questions, 1):
+    question_blocks += f'''
+    <div class="quiz-section" data-question="q{i}">
+      <div class="quiz-title">{title}</div>
+      <div class="quiz-text">{text}</div>
+      <div class="rating">
+        <button>1</button><button>2</button><button>3</button><button>4</button><button>5</button>
+      </div>
+    </div>
+    '''
+
+# Insert questions into final HTML
+full_html = html_content % question_blocks
+
+# Save to file
+with open(html_path, "w") as f:
+    f.write(full_html)
+
+# Zip for download
+zip_path = "/mnt/data/introvert_quiz_final.zip"
+with ZipFile(zip_path, "w") as zipf:
+    zipf.write(html_path, arcname="index.html")
+
+zip_path
